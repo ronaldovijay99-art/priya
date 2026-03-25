@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Message For You</title>
+    <style>
+        :root {
+            --env-color: #ff4d6d;
+            --env-dark: #c9184a;
+            --paper-color: #fff0f3;
+            --heart-red: #ff0054;
+            --bg-color: #ffe5ec;
+            --text-main: #590d22;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--bg-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+
+        /* --- LOGIN SCREEN --- */
+        #login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: opacity 0.6s ease, visibility 0.6s;
+        }
+
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(255, 77, 109, 0.2);
+            text-align: center;
+            width: 320px;
+        }
+
+        .login-box h2 {
+            color: var(--env-dark);
+            margin-bottom: 20px;
+        }
+
+        input[type="password"] {
+            width: 80%;
+            padding: 12px;
+            border: 2px solid #ffccd5;
+            border-radius: 10px;
+            outline: none;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            text-align: center;
+        }
+
+        input[type="password"]:focus {
+            border-color: var(--env-color);
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px 30px;
+            background-color: var(--env-color);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        button:hover {
+            background-color: var(--env-dark);
+            transform: scale(1.05);
+        }
+
+        .error-msg {
+            color: var(--env-dark);
+            font-size: 14px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        /* --- MAIN CONTENT (ENVELOPE) --- */
+        #main-content {
+            opacity: 0;
+            visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1s ease;
+        }
+
+        .envelope-wrapper {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            background-color: var(--env-dark);
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        /* The Letter inside */
+        .letter {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            height: 90%;
+            background: var(--paper-color);
+            padding: 20px;
+            box-sizing: border-box;
+            transition: transform 0.6s ease;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .letter h2 {
+            color: var(--env-dark);
+            font-size: 1.2rem;
+            margin: 0 0 10px 0;
+        }
+
+        .letter p {
+            font-size: 0.9rem;
+            color: var(--text-main);
+            line-height: 1.4;
+        }
+
+        /* Front of Envelope */
+        .envelope {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: var(--env-color);
+            z-index: 3;
+        }
+
+        .envelope::before {
+            content: "";
+            position: absolute;
+            z-index: 4;
+            border-top: 100px solid transparent;
+            border-right: 150px solid var(--env-dark);
+            border-bottom: 100px solid var(--env-dark);
+            border-left: 150px solid var(--env-dark);
+        }
+
+        /* The Top Flap */
+        .flap {
+            position: absolute;
+            top: 0;
+            width: 0;
+            height: 0;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-top: 100px solid var(--env-color);
+            transform-origin: top;
+            transition: transform 0.6s ease;
+            z-index: 5;
+        }
+
+        /* Animation Trigger (Hover) */
+        .envelope-wrapper:hover .flap {
+            transform: rotateX(180deg);
+            z-index: 1;
+        }
+
+        .envelope-wrapper:hover .letter {
+            transform: translate(-50%, -120px);
+        }
+
+        /* --- FLOATING HEARTS --- */
+        .heart {
+            position: absolute;
+            font-size: 24px;
+            color: var(--heart-red);
+            pointer-events: none;
+            z-index: 10;
+            animation: floatUp 3.5s ease-in forwards;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) scale(0.5);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-600px) translateX(var(--drift)) rotate(45deg) scale(1.5);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="login-screen">
+        <div class="login-box">
+            <h2>Enter Password</h2>
+            <input type="password" id="passInput" placeholder="Password: priya">
+            <br>
+            <button onclick="unlock()">Open Secret</button>
+            <p id="error" class="error-msg">Incorrect Password. Try again!</p>
+        </div>
+    </div>
+
+    <div id="main-content">
+        <div class="envelope-wrapper" id="envelope">
+            <div class="flap"></div>
+            <div class="envelope"></div>
+            <div class="letter">
+                <h2>Dear Priya ❤️</h2>
+                <p>"Happy Birthday! Cheers to another year of you being amazing. I know I’ve tried to irritate you at times, but I never once intended to insult you.
+
+Even though I won't have a physical presence in your life, I’ve tried everything possible to stay a part of it—and I’ll continue to do my best without any expectations. I know your true worth better than anyone. Have the best day!"!</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Password Protection
+        function unlock() {
+            const input = document.getElementById('passInput').value;
+            const error = document.getElementById('error');
+            const login = document.getElementById('login-screen');
+            const content = document.getElementById('main-content');
+
+            // Hardcoded password: love
+            if (input.toLowerCase() === 'love') {
+                login.style.opacity = '0';
+                login.style.visibility = 'hidden';
+                content.style.opacity = '1';
+                content.style.visibility = 'visible';
+            } else {
+                error.style.display = 'block';
+                document.getElementById('passInput').value = "";
+            }
+        }
+
+        // Heart Flow Generator
+        const envelope = document.getElementById('envelope');
+        let heartStream;
+
+        function spawnHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️';
+            
+            // Positioning hearts relative to the envelope center
+            const rect = envelope.getBoundingClientRect();
+            heart.style.left = (rect.left + rect.width / 2 + (Math.random() - 0.5) * 100) + 'px';
+            heart.style.top = rect.top + 'px';
+            
+            // Random horizontal drift
+            const drift = (Math.random() - 0.5) * 300 + 'px';
+            heart.style.setProperty('--drift', drift);
+            
+            document.body.appendChild(heart);
+
+            // Remove heart after animation
+            setTimeout(() => {
+                heart.remove();
+            }, 3500);
+        }
+
+        // Trigger hearts on hover
+        envelope.addEventListener('mouseenter', () => {
+            heartStream = setInterval(spawnHeart, 200);
+        });
+
+        // Stop hearts when not hovering
+        envelope.addEventListener('mouseleave', () => {
+            clearInterval(heartStream);
+        });
+
+        // Allow pressing 'Enter' key to login
+        document.getElementById('passInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                unlock();
+            }
+        });
+    </script>
+
+</body>
+</html>
